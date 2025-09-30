@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  project-service:
+    build: ./project_service
+    ports:
+      - "5000:5000"
+    networks:
+      - microservices-network
+    environment:
+      - FLASK_ENV=development
+
+  user-service:
+    build: ./user_service
+    ports:
+      - "5001:5001"
+    networks:
+      - microservices-network
+    environment:
+      - PROJECT_SERVICE_URL=http://project-service:5000
+      - FLASK_ENV=development
+    depends_on:
+      - project-service
+
+  product-service:
+    build: ./product_service
+    ports:
+      - "5002:5002"
+    networks:
+      - microservices-network
+    environment:
+      - PROJECT_SERVICE_URL=http://project-service:5000
+      - FLASK_ENV=development
+    depends_on:
+      - project-service
+
+networks:
+  microservices-network:
+    driver: bridge
