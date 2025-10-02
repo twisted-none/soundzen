@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  main-service:
+    image: myapp/main-service:latest
+    networks:
+      - backend
+
+  user-service:
+    image: myapp/user-service:latest
+    networks:
+      - backend
+
+  product-service:
+    image: myapp/product-service:latest
+    networks:
+      - backend
+
+  nginx:
+    image: myapp/nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - main-service
+      - user-service
+      - product-service
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: overlay
